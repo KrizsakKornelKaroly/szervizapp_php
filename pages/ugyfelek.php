@@ -30,10 +30,10 @@
             <a href="../index.php" class="btn btn-secondary my-0">Vissza a főoldalra</a>
         </div>
 
-        <p class="fs-5">Ügyfelek</p>
+        <h2> Ügyfelek</h2>
 
-
-        <div class="bg-dark p-4 rounded col-12 col-lg-8">
+        <div class="bg-dark p-4 rounded col-12 col-lg-6 mx-auto">
+            <h4><?php echo isset($newCustomer) ? 'Ügyfél módosítása' : 'Új ügyfél hozzáadása'; ?></h4>
             <form action="<?php echo isset($newCustomer) ? '../actions/customers/updateCustomer.php' : '../actions/customers/newCustomer.php'; ?>" method="POST">
 
                 <!--Rejtett mező az ID-nak -->

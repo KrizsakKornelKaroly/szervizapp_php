@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </head>
 <body data-bs-theme="dark">
-    <div class="container mt-5 text-center bg-secondary-subtle p-5 rounded">
+    <div class="container mt-5 text-center bg-secondary-subtle p-5 rounded col-lg-4 mx-auto">
         <h1 class="mb-4">Szervíz PHP</h1>
         <p class="fs-5">Szervíz adatok kezelése</p>
 
@@ -18,7 +18,7 @@
             <hr>
             <a href="pages/szolgaltatasok.php" class="btn btn-secondary">Szolgáltatások</a>
             <hr>
-            <a href="pages/foglalasok.php" class="btn btn-secondary">Foglalások</a>
+            <a href="pages/idopontok.php" class="btn btn-secondary">Időpontok</a>
             <hr>
         </div>
 

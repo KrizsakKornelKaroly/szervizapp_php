@@ -30,70 +30,75 @@
             <a href="../index.php" class="btn btn-secondary my-0">Vissza a főoldalra</a>
         </div>
 
-        <p class="fs-5">Szolgáltatások</p>
+        <h2>Szolgáltatások</h2>
 
 
-        <div class="bg-dark p-4 rounded col-12 col-lg-8">
+        <div class="bg-dark p-4 rounded col-12 col-lg-6 mx-auto">
+            <h4><?php echo isset($newService) ? 'Szolgáltatás módosítása' : 'Új szolgáltatás hozzáadása'; ?></h4>
             <form action="<?php echo isset($newService) ? '../actions/services/updateService.php' : '../actions/services/newService.php'; ?>" method="POST">
 
                 <!--Rejtett mező az ID-nak -->
                 <input type="hidden" name="id" value="<?php echo isset($newService) ? $newService['id'] : ''; ?>">
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Név</label>
+                    <label for="name" class="form-label">Megnevezés</label>
                     <input type="text" class="form-control" id="name" name="name" value="<?php echo isset($newService) ? $newService['name'] : ''; ?>" required>
                 </div>
+
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<?php echo isset($newService) ? $newService['email'] : ''; ?>" required>
+                    <label for="price" class="form-label">Ár</label>
+                    <input type="number" class="form-control" id="price" name="price" value="<?php echo isset($newService) ? $newService['price'] : ''; ?>" required>
                 </div>
+
                 <div class="mb-3">
-                    <label for="phone" class="form-label">Telefonszám</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo isset($newService) ? $newService['phone'] : ''; ?>" required>
+                    <label for="duration_minutes" class="form-label">Hossz (perc)</label>
+                    <input type="number" class="form-control" id="duration_minutes" name="duration_minutes" value="<?php echo isset($newService) ? $newService['duration_minutes'] : ''; ?>" required>
                 </div>
-                <button type="submit" class="btn btn-primary" 
+
+
+                <button type="submit" class="btn btn-primary"
                     name="<?php echo isset($newService) ? 'updateBtn' : 'saveBtn'; ?>">
                     <?php echo isset($newService) ? 'Módosítás' : 'Hozzáadás'; ?>
                 </button>
                 <?php
-                if (isset($newCustomer)) {
-                    echo '<a href="../pages/ugyfelek.php" class="btn btn-secondary">Mégse</a>';
+                if (isset($newService)) {
+                    echo '<a href="../pages/szolgaltatasok.php" class="btn btn-secondary">Mégse</a>';
                 }
                 ?>
             </form>
         </div>
 
         <div class="mt-4">
-            <h2>Ügyfelek listája</h2>
+            <h2>Szolgáltatások listája</h2>
 
             <table class="table table-striped table-hover mt-3">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Név</th>
-                        <th>Email</th>
-                        <th>Telefonszám</th>
+                        <th>Ár</th>
+                        <th>Hossz (perc)</th>
                         <th class="text-end">Műveletek</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $i = 0; ?>
-                    <?php foreach ($customers as $customer): ?>
+                    <?php foreach ($services as $service): ?>
                         <tr>
                             <td><?php echo ++$i; ?></td>
-                            <td><?php echo $customer['name']; ?></td>
-                            <td><?php echo $customer['email']; ?></td>
-                            <td><?php echo $customer['phone']; ?></td>
+                            <td><?php echo $service['name']; ?></td>
+                            <td><?php echo $service['price']; ?></td>
+                            <td><?php echo $service['duration_minutes']; ?></td>
                             <td class="text-end">
-                                <a href="../pages/ugyfelek.php?id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-warning">Szerkesztés</a>
-                                <a href="../actions/customers/deleteCustomer.php?id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-danger">Törlés</a>
+                                <a href="../pages/szolgaltatasok.php?id=<?php echo $service['id']; ?>" class="btn btn-sm btn-warning">Szerkesztés</a>
+                                <a href="../actions/services/deleteService.php?id=<?php echo $service['id']; ?>" class="btn btn-sm btn-danger">Törlés</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="text-end">Összesen: <?php echo count($customers); ?> db</td>
+                        <td colspan="5" class="text-end">Összesen: <?php echo count($services); ?> db</td>
                     </tr>
                 </tfoot>
             </table>

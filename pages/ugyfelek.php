@@ -10,16 +10,31 @@
 </head>
 
 <?php
-    $customers = [];
-    require('../db.php');
-    $customers = apiRequest('GET', 'customers');
+$customers = [];
+require('../db.php');
+$customers = apiRequest('GET', 'customers');
 
-    if (isset($_GET['id'])) {
-        $customer = apiRequest('GET', 'customers', $_GET['id']);
-        if ($customer) {
-            $newCustomer = $customer;
-        }
+
+$totalCustomers = count($customers);
+$currentPage = 1;
+$customersPerPage = 10;
+if (isset($_GET['page'])) {
+    $currentPage = $_GET['page'];
+    $page = $_GET['page'];
+    $offset = ($page - 1) * $customersPerPage;
+    $customers = array_slice($customers, $offset, $customersPerPage);
+} else {
+    $customers = array_slice($customers, 0, $customersPerPage);
+}
+
+
+
+if (isset($_GET['id'])) {
+    $customer = apiRequest('GET', 'customers', $_GET['id']);
+    if ($customer) {
+        $newCustomer = $customer;
     }
+}
 ?>
 
 
@@ -29,10 +44,19 @@
             <h1>Szervíz PHP</h1>
             <a href="../index.php" class="btn btn-secondary my-0">Vissza a főoldalra</a>
         </div>
+        <hr>
 
-        <h2> Ügyfelek</h2>
 
-        <div class="bg-dark p-4 rounded col-12 col-lg-6 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Ügyfelek</h2>
+            <Button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#customerForm" aria-expanded="<?php echo isset($newCustomer) ? 'true' : 'false'; ?>" aria-controls="customerForm">
+                Új ügyfél hozzáadása
+            </Button>
+        </div>
+
+
+
+        <div class="collapse <?php echo isset($newCustomer) ? 'show' : ''; ?> bg-dark p-4 rounded col-12 col-lg-6 mx-auto mt-4" id="customerForm">
             <h4><?php echo isset($newCustomer) ? 'Ügyfél módosítása' : 'Új ügyfél hozzáadása'; ?></h4>
             <form action="<?php echo isset($newCustomer) ? '../actions/customers/updateCustomer.php' : '../actions/customers/newCustomer.php'; ?>" method="POST">
 
@@ -51,7 +75,7 @@
                     <label for="phone" class="form-label">Telefonszám</label>
                     <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo isset($newCustomer) ? $newCustomer['phone'] : ''; ?>" required>
                 </div>
-                <button type="submit" class="btn btn-primary" 
+                <button type="submit" class="btn btn-primary"
                     name="<?php echo isset($newCustomer) ? 'updateBtn' : 'saveBtn'; ?>">
                     <?php echo isset($newCustomer) ? 'Módosítás' : 'Hozzáadás'; ?>
                 </button>
@@ -62,6 +86,8 @@
                 ?>
             </form>
         </div>
+
+        <hr>
 
         <div class="mt-4">
             <h2>Ügyfelek listája</h2>
@@ -93,10 +119,30 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="text-end">Összesen: <?php echo count($customers); ?> db</td>
+                        <td colspan="5" class="text-end">Összesen: <?php echo $totalCustomers; ?> ügyfél, ebből: <?php echo count($customers); ?> ügyfél</td>
                     </tr>
                 </tfoot>
             </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo max(1, $currentPage - 1); ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <?php for ($page = 1; $page <= ceil($totalCustomers / $customersPerPage); $page++): ?>
+                        <li class="page-item <?php echo $page == $currentPage ? 'active' : ''; ?>"><a class="page-link" href="?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                    <?php endfor; ?>
+
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo min(ceil($totalCustomers / $customersPerPage), $currentPage + 1); ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
     </div>

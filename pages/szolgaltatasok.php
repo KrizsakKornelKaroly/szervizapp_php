@@ -14,6 +14,20 @@
     require('../db.php');
     $services = apiRequest('GET', 'services');
 
+$totalServices = count($services);
+$currentPage = 1;
+$servicesPerPage = 10;
+if (isset($_GET['page'])) {
+    $currentPage = $_GET['page'];
+    $page = $_GET['page'];
+    $offset = ($page - 1) * $servicesPerPage;
+    $services = array_slice($services, $offset, $servicesPerPage);
+} else {
+    $services = array_slice($services, 0, $servicesPerPage);
+}
+
+
+
     if (isset($_GET['id'])) {
         $service = apiRequest('GET', 'services', $_GET['id']);
         if ($service) {
@@ -30,10 +44,17 @@
             <a href="../index.php" class="btn btn-secondary my-0">Vissza a főoldalra</a>
         </div>
 
-        <h2>Szolgáltatások</h2>
+        <hr>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Szolgáltatások</h2>
+            <Button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#serviceForm" aria-expanded="<?php echo isset($newService) ? 'true' : 'false'; ?>" aria-controls="serviceForm">
+                Új szolgáltatás hozzáadása
+            </Button>
+        </div>
 
 
-        <div class="bg-dark p-4 rounded col-12 col-lg-6 mx-auto">
+        <div class="collapse <?php echo isset($newService) ? 'show' : ''; ?> bg-dark p-4 rounded col-12 col-lg-6 mx-auto" id="serviceForm">
             <h4><?php echo isset($newService) ? 'Szolgáltatás módosítása' : 'Új szolgáltatás hozzáadása'; ?></h4>
             <form action="<?php echo isset($newService) ? '../actions/services/updateService.php' : '../actions/services/newService.php'; ?>" method="POST">
 
@@ -68,6 +89,8 @@
             </form>
         </div>
 
+        <hr>
+
         <div class="mt-4">
             <h2>Szolgáltatások listája</h2>
 
@@ -98,10 +121,31 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="text-end">Összesen: <?php echo count($services); ?> db</td>
+                        <td colspan="5" class="text-end">Összesen: <?php echo $totalServices; ?> db, ebből: <?php echo count($services); ?> db</td>
                     </tr>
                 </tfoot>
             </table>
+
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo max(1, $currentPage - 1); ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <?php for ($page = 1; $page <= ceil($totalServices / $servicesPerPage); $page++): ?>
+                        <li class="page-item <?php echo $page == $currentPage ? 'active' : ''; ?>"><a class="page-link" href="?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                    <?php endfor; ?>
+
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo min(ceil($totalServices / $servicesPerPage), $currentPage + 1); ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
     </div>
